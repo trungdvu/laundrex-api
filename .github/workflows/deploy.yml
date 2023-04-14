@@ -1,0 +1,45 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Checkout the repository
+      #   uses: actions/checkout@v3
+      # - name: Docker login
+      #   env:
+      #     DOCKER_USER: ${{secrets.DOCKER_USER}}
+      #     DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      #   run: |
+      #     docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      # - name: Docker push
+      #   run: |
+      #     docker build -t ${{secrets.DOCKER_USER}}/laundrex-api .
+      #     docker push ${{secrets.DOCKER_USER}}/laundrex-api
+      - name: Docker pull and run
+        uses: appleboy/ssh-action@v0.1.10
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          envs: DOCKER_USER,DOCKER_PASSWORD
+          script: |
+            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USER --password-stdin
+            docker pull ${{secrets.DOCKER_USER}}/laundrex-api
+            docker container stop laundrex-api
+            docker container rm laundrex-api
+            docker run -d --name laundrex-api -p 80:8080 -e POSTGRES_HOST=${{secrets.POSTGRES_HOST}} -e POSTGRES_USER=${{secrets.POSTGRES_USER}} -e POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}} -e POSTGRES_DB={{secrets.POSTGRES_DB}} ${{secrets.DOCKER_USER}}/laundrex-api
+            docker exec -d laundrex-api npm run migration:run
