@@ -1,1 +1,31 @@
-## Laundrex api
+# Laundrex api
+
+## Setup
+
+1. Install dependencies
+
+```bash
+  npm install
+```
+
+2. Add `.env` file with files in `.env.example`
+
+3. Start the dev server
+
+```bash
+  npm run start:dev
+```
+
+## Database migration
+
+Auto generate migration
+
+```bash
+  npm run migration:generate -- db/migration/[name]
+```
+
+Run migration
+
+```bash
+  npm run migration:run
+```
