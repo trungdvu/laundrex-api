@@ -29,3 +29,17 @@ Run migration
 ```bash
   npm run migration:run
 ```
+
+## Dev with docker compose
+
+Start services
+
+```bash
+  docker compose up -d
+```
+
+Run migrations
+
+```bash
+  docker exec server npm run migration:run
+```
