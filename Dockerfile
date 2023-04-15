@@ -34,5 +34,6 @@ FROM node:18-alpine As production
 
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node package*.json ./
 
-CMD [ "node", "dist/src/main.js" ]
+CMD [ "npm", "run", "start:prod" ]
