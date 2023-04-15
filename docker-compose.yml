@@ -3,25 +3,27 @@ version: '3'
 services:
   db:
     image: postgres:15.2-alpine
-    container_name: laundrex-pg
+    container_name: laundrex-db-local
     restart: always
     ports:
       - '5432:5432'
     env_file:
       - .env
-  server:
-    container_name: server
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
-      target: development
-    ports:
-      - '8080:8080'
-    env_file:
-      - .env
-    depends_on:
-      - db
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    command: npm run start:dev
+      - ./db/data:/var/lib/postgresql/data
+  # api:
+  #   container_name: laundrex-api-local
+  #   build:
+  #     context: ./
+  #     dockerfile: ./Dockerfile
+  #     target: development
+  #   ports:
+  #     - '8080:8080'
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - db
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   command: npm run start:dev
