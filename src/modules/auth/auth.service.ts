@@ -1,36 +1,53 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
+import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
+import { hashPassword, matchPassword } from './auth.util';
 import { SignUpDto } from './dtos/sign-up.dto';
-import { checkPassword, hashPassword } from './auth.util';
-import { SignInDto } from './dtos/sign-in.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
+  ) {}
 
-  async signUp(signUpDto: SignUpDto) {
+  async signUp(signUpDto: SignUpDto): Promise<UserEntity> {
     const { password, email } = signUpDto;
     const hashed = await hashPassword(password);
-    await this.userService.create({ email, password: hashed });
-
-    return 'Sign up successfully';
+    const user = await this.userService.create({ email, password: hashed });
+    return user;
   }
 
-  async signIn(signInDto: SignInDto) {
-    const { password, email } = signInDto;
+  async validateUser(email: string, password: string): Promise<UserEntity> {
     const user = await this.userService.findOneByEmail(email);
     if (!user) {
-      throw new InternalServerErrorException();
+      return null;
     }
-    const isMatch = await checkPassword(password, user.password);
-    if (!isMatch) {
-      throw new UnauthorizedException('incorrect password');
+    const { password: hashedPassword } = user;
+    const isMatched = await matchPassword(password, hashedPassword);
+    if (!isMatched) {
+      return null;
     }
+    return user;
+  }
 
-    return 'Sign in successfully';
+  async signIn(user: UserEntity, res: Response): Promise<void> {
+    const tokenPayload = { userId: user.id };
+    const token = await this.jwtService.signAsync(tokenPayload);
+    res.cookie('Authentication', token, {
+      httpOnly: true,
+      maxAge: this.configService.get('JWT_EXPIRATION'),
+    });
+  }
+
+  async signOut(response: Response): Promise<void> {
+    response.cookie('Authentication', '', {
+      expires: new Date(),
+      httpOnly: true,
+    });
   }
 }
