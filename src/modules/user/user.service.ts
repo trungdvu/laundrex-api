@@ -21,7 +21,14 @@ export class UserService {
   }
 
   async findOneByEmail(email: string): Promise<UserEntity> {
-    return this.userRepository.findOneBy({ email });
+    return this.userRepository.findOne({
+      where: {
+        email,
+      },
+      relations: {
+        role: true,
+      },
+    });
   }
 
   async update(id: string, updateUserDto: any): Promise<UserEntity> {
