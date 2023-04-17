@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
-import { hashPassword, matchPassword } from './auth.util';
+import { hashPassword, matchPassword, secondToMillisecond } from './auth.util';
 import { SignUpDto } from './dtos/sign-up.dto';
 
 @Injectable()
@@ -38,9 +38,10 @@ export class AuthService {
   async signIn(user: UserEntity, res: Response): Promise<void> {
     const tokenPayload = { userId: user.id };
     const token = await this.jwtService.signAsync(tokenPayload);
+    const jwtExpiration = this.configService.get('JWT_EXPIRATION');
     res.cookie('Authentication', token, {
       httpOnly: true,
-      maxAge: this.configService.get('JWT_EXPIRATION'),
+      maxAge: secondToMillisecond(jwtExpiration),
     });
   }
 

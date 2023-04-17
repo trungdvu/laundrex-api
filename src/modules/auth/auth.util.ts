@@ -8,3 +8,7 @@ export const hashPassword = async (password: string) => {
 export const matchPassword = async (password: string, hash: string) => {
   return bcrypt.compare(password, hash);
 };
+
+export const secondToMillisecond = (number: number) => {
+  return number * 1000;
+};

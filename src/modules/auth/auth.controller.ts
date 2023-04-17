@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Post,
+  Res,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
@@ -19,16 +28,18 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('sign-in')
   async signIn(
     @CurrentUser() user: UserEntity,
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.signIn(user, res);
-    res.send(user);
+    return user;
   }
 
   @Get('me')
+  @UseInterceptors(ClassSerializerInterceptor)
   async getProfile(@CurrentUser() user: UserEntity) {
     return user;
   }
