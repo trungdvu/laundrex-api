@@ -40,11 +40,10 @@ jobs:
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: NODE_ENV, DOCKER_USER, DOCKER_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, JWT_SECRET, JWT_EXPIRATION
-          script_stop: true
           script: |
             echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USER --password-stdin
-            docker pull $DOCKER_USER/laundrex-api
+            docker pull $DOCKER_USER/laundrex-api:latest
             docker container stop laundrex-api
             docker container rm laundrex-api
-            docker run -d --name laundrex-api -p 80:8080 -e POSTGRES_HOST=$POSTGRES_HOST -e POSTGRES_USER=$POSTGRES_USER -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -e POSTGRES_DB=$POSTGRES_DB -e POSTGRES_PORT=$POSTGRES_PORT $DOCKER_USER/laundrex-api
+            docker run -d --name laundrex-api -p 80:8080 -e NODE_ENV=$NODE_ENV -e POSTGRES_HOST=$POSTGRES_HOST -e POSTGRES_USER=$POSTGRES_USER -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -e POSTGRES_DB=$POSTGRES_DB -e POSTGRES_PORT=$POSTGRES_PORT -e JWT_SECRET=$JWT_SECRET -e JWT_EXPIRATION=$JWT_EXPIRATION $DOCKER_USER/laundrex-api
             docker exec -d laundrex-api npm run migration:run:prod
