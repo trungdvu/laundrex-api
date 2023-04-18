@@ -12,10 +12,13 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.POSTGRES_DB,
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/db/migrations/*.js'],
-  ssl: {
-    requestCert: true,
-    rejectUnauthorized: false,
-  },
+  ssl:
+    process.env.NODE_ENV === 'development'
+      ? false
+      : {
+          requestCert: true,
+          rejectUnauthorized: false,
+        },
 };
 
 export default new DataSource(dataSourceOptions);
