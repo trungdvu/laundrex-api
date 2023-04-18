@@ -9,8 +9,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Public } from '../../common/decorators/public.decorator';
+import { CurrentUser } from '../../decorators/current-user.decorator';
+import { Public } from '../../decorators/public.decorator';
 import { UserEntity } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dtos/sign-up.dto';

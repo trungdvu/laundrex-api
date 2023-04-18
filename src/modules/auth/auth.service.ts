@@ -4,8 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
-import { hashPassword, matchPassword, secondToMillisecond } from './auth.util';
+import { secondToMillisecond } from './auth.util';
 import { SignUpDto } from './dtos/sign-up.dto';
+import { hashPassword, matchPassword } from '../../utils/bycrypt.util';
 
 @Injectable()
 export class AuthService {
