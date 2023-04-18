@@ -1,7 +1,18 @@
 import * as dotenv from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { Environment } from '../src/constants/environment.constant';
 
 dotenv.config();
+
+const getSslOptions = (nodeEnv: string) => {
+  if (nodeEnv === Environment.Development) {
+    return false;
+  }
+  return {
+    requestCert: true,
+    rejectUnauthorized: false,
+  };
+};
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -12,13 +23,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.POSTGRES_DB,
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/db/migrations/*.js'],
-  ssl:
-    process.env.NODE_ENV === 'development'
-      ? false
-      : {
-          requestCert: true,
-          rejectUnauthorized: false,
-        },
+  ssl: getSslOptions(process.env.NODE_ENV),
 };
 
 export default new DataSource(dataSourceOptions);

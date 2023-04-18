@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { hashPassword, matchPassword } from '../../utils/bycrypt.util';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
 import { secondToMillisecond } from './auth.util';
 import { SignUpDto } from './dtos/sign-up.dto';
-import { hashPassword, matchPassword } from '../../utils/bycrypt.util';
 
 @Injectable()
 export class AuthService {

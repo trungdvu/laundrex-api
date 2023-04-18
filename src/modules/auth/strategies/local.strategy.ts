@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
+import { ErrorCode } from '../../../constants/error-code.constant';
 import { UserEntity } from '../../user/entities/user.entity';
 import { AuthService } from '../auth.service';
-import { ERROR_CODE } from '../../../constants/error-code.constant';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +15,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(email, password);
     if (!user) {
       throw new UnauthorizedException({
-        errorCode: ERROR_CODE.AUTH.USER_NOT_FOUND,
+        errorCode: ErrorCode.Auth.UserNotFound,
         message: 'user not found',
       });
     }

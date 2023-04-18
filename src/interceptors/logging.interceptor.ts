@@ -12,11 +12,11 @@ import { tap, catchError } from 'rxjs/operators';
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
 
-  intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> {
-    const req = ctx.switchToHttp().getRequest();
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const req = context.switchToHttp().getRequest();
     const { method, path } = req;
-    const className = ctx.getClass().name;
-    const handlerName = ctx.getHandler().name;
+    const className = context.getClass().name;
+    const handlerName = context.getHandler().name;
     const requestTime = Date.now();
 
     this.logger.log(
@@ -25,15 +25,14 @@ export class LoggingInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap(() => {
-        const res = ctx.switchToHttp().getResponse();
+        const res = context.switchToHttp().getResponse();
         const { statusCode } = res;
         const time = Date.now() - requestTime;
-
         this.logger.log(`RES ${method} ${path} ${statusCode} ${time}ms`);
       }),
-      catchError((err) => {
-        this.logger.error(err);
-        return throwError(() => err);
+      catchError((error) => {
+        this.logger.error(error);
+        return throwError(() => error);
       }),
     );
   }

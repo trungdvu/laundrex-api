@@ -1,11 +1,11 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import * as cookieParser from 'cookie-parser';
-import { AppModule } from './app.module';
 import {
   HttpStatus,
   UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
+import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
