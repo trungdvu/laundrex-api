@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
@@ -7,6 +7,7 @@ import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
 import { secondToMillisecond } from './auth.util';
 import { SignUpDto } from './dtos/sign-up.dto';
+import { ErrorCode } from '../../constants/error-code.constant';
 
 @Injectable()
 export class AuthService {
@@ -18,8 +19,18 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto): Promise<UserEntity> {
     const { password, email } = signUpDto;
+    const existed = await this.userService.findOneByEmail(email);
+    if (existed) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.Auth.EmailAlreadyExists,
+        message: 'email already exists',
+      });
+    }
     const hashed = await hashPassword(password);
-    const user = await this.userService.create({ email, password: hashed });
+    const user = await this.userService.create({
+      email,
+      password: hashed,
+    });
     return user;
   }
 

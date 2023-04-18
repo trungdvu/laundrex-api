@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Role } from '../../constants/common.constant';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
@@ -10,10 +12,17 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(RoleEntity)
+    private readonly roleRepository: Repository<RoleEntity>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const user = this.userRepository.create(createUserDto);
+    const userRole = await this.roleRepository.findOneBy({ name: Role.User });
+    const role = userRole ? userRole : undefined;
+    const user = this.userRepository.create({
+      role,
+      ...createUserDto,
+    });
     return this.userRepository.save(user);
   }
 
