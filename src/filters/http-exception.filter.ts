@@ -19,21 +19,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    let data = {
+    let message = {
       message: (exception as Error).message,
       errorCode: null,
     } as ErrorModel;
 
     if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
-      data = exception.getResponse() as ErrorModel;
+      message = exception.getResponse() as ErrorModel;
     }
 
     res.status(statusCode).json({
       statusCode,
       path: req.url,
       timestamp: new Date().toISOString(),
-      ...data,
+      ...message,
     });
   }
 }
