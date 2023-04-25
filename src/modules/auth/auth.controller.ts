@@ -1,8 +1,19 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { Public } from '../../decorators/public.decorator';
 import { SerializerResponse } from '../../decorators/serializer-response.decorator';
+import { TranformInterceptor } from '../../interceptors/transform.interceptor';
 import { UserEntity } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dtos/sign-up.dto';
@@ -13,6 +24,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @UseInterceptors(TranformInterceptor)
   @Post('sign-up')
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);
@@ -20,6 +32,8 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
+  @UseInterceptors(TranformInterceptor)
+  @HttpCode(HttpStatus.OK)
   @SerializerResponse()
   @Post('sign-in')
   async signIn(
@@ -30,6 +44,7 @@ export class AuthController {
     return user;
   }
 
+  @UseInterceptors(TranformInterceptor)
   @SerializerResponse()
   @Get('me')
   async getProfile(@CurrentUser() user: UserEntity) {

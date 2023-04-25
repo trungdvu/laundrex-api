@@ -11,6 +11,14 @@ services:
       - .env
     volumes:
       - ./db/data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+        reservations:
+          cpus: '0.025'
+          memory: 50M
   # api:
   #   container_name: laundrex-api-local
   #   build:
