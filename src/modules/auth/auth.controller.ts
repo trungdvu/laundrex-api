@@ -50,4 +50,13 @@ export class AuthController {
   async getProfile(@CurrentUser() user: UserEntity) {
     return user;
   }
+
+  @Public()
+  @UseInterceptors(TranformInterceptor)
+  @HttpCode(HttpStatus.OK)
+  @Post('sign-out')
+  async signOut(@Res({ passthrough: true }) res: Response) {
+    await this.authService.signOut(res);
+    return true;
+  }
 }
