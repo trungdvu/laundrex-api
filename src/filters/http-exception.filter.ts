@@ -33,6 +33,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode,
       path: req.url,
       timestamp: new Date().toISOString(),
+      ok: statusCode > 199 && statusCode < 400,
       ...message,
     });
   }
