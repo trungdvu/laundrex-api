@@ -13,8 +13,8 @@ export class CustomerEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  usernane: string;
+  @Column({ unique: true })
+  username: string;
 
   @OneToMany(() => BookingEntity, (booking) => booking.customer)
   bookings: BookingEntity[];
