@@ -6,6 +6,9 @@ import { AppController } from './app.controller';
 import { configModuleOptions } from './configs/config-module-options.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { CustomerModule } from './modules/customer/customer.module';
+import { ServiceModule } from './modules/service/service.module';
 
 @Module({
   imports: [
@@ -13,6 +16,9 @@ import { UserModule } from './modules/user/user.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
     AuthModule,
+    BookingModule,
+    CustomerModule,
+    ServiceModule,
   ],
   controllers: [AppController],
   providers: [],
