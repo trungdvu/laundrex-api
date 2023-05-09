@@ -12,6 +12,12 @@ export class CustomerService {
     private readonly customerRepository: Repository<CustomerEntity>,
   ) {}
 
+  async findById(id: string): Promise<CustomerEntity> {
+    return this.customerRepository.findOne({
+      where: { id },
+    });
+  }
+
   async create(createCustomerDto: CreateCustomerDto): Promise<CustomerEntity> {
     const customer = this.customerRepository.create(createCustomerDto);
     return this.customerRepository.save(customer);
