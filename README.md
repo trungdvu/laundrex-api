@@ -1,5 +1,11 @@
 # Laundrex api
 
+## Overview
+
+- AWS EC2
+- ZeroSSL
+- NestJS
+
 ## Setup
 
 1. Install dependencies
@@ -21,7 +27,7 @@
 Auto generate migration
 
 ```bash
-  npm run migration:generate -- db/migration/[name]
+  npm run migration:generate -- db/migrations/[name]
 ```
 
 Run migration
