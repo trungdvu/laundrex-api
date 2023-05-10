@@ -22,7 +22,7 @@ export class AuthService {
     const existed = await this.userService.findOneByEmail(email);
     if (existed) {
       throw new BadRequestException({
-        errorCode: ErrorCode.Auth.EmailAlreadyExists,
+        errorCode: ErrorCode.EmailAlreadyExists,
         message: 'email already exists',
       });
     }

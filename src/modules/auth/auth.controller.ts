@@ -23,19 +23,19 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post('sign-up')
   @Public()
   @UseInterceptors(TranformInterceptor)
-  @Post('sign-up')
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);
   }
 
+  @Post('sign-in')
   @Public()
   @UseGuards(LocalAuthGuard)
   @UseInterceptors(TranformInterceptor)
   @HttpCode(HttpStatus.OK)
   @SerializerResponse()
-  @Post('sign-in')
   async signIn(
     @CurrentUser() user: UserEntity,
     @Res({ passthrough: true }) res: Response,
@@ -44,17 +44,17 @@ export class AuthController {
     return user;
   }
 
+  @Get('me')
   @UseInterceptors(TranformInterceptor)
   @SerializerResponse()
-  @Get('me')
   async getProfile(@CurrentUser() user: UserEntity) {
     return user;
   }
 
+  @Post('sign-out')
   @Public()
   @UseInterceptors(TranformInterceptor)
   @HttpCode(HttpStatus.OK)
-  @Post('sign-out')
   async signOut(@Res({ passthrough: true }) res: Response) {
     await this.authService.signOut(res);
     return true;

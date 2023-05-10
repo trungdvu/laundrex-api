@@ -1,8 +1,7 @@
 export const ErrorCode = {
-  Auth: {
-    EmailAlreadyExists: 'auth/email-already-exists',
-    TokenExpired: 'auth/token-expired',
-    InvalidPassword: 'auth/invalid-password',
-    UserNotFound: 'auth/user-not-found',
-  },
+  EmailAlreadyExists: 'email-already-exists',
+  TokenExpired: 'token-expired',
+  InvalidPassword: 'invalid-password',
+  UserNotFound: 'user-not-found',
+  CustomerAlreadyExists: 'customer-already-exists',
 };

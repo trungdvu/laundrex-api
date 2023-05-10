@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.findOneById(userId);
     if (!user) {
       throw new UnauthorizedException({
-        errorCode: ErrorCode.Auth.TokenExpired,
+        errorCode: ErrorCode.TokenExpired,
         message: 'access token is expired',
       });
     }

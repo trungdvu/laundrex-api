@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ErrorCode } from 'src/constants/error-code.constant';
 import { Repository } from 'typeorm';
 import { CreateCustomerDto } from './dtos/create-customer.dto';
 import { UpdateCustomerDto } from './dtos/update-customer.dto';
@@ -18,7 +23,18 @@ export class CustomerService {
     });
   }
 
+  async findByUsername(username: string) {
+    return this.customerRepository.findOneBy({ username });
+  }
+
   async create(createCustomerDto: CreateCustomerDto): Promise<CustomerEntity> {
+    const existed = await this.findByUsername(createCustomerDto.username);
+    if (existed) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.CustomerAlreadyExists,
+        message: 'customer already exists',
+      });
+    }
     const customer = this.customerRepository.create(createCustomerDto);
     return this.customerRepository.save(customer);
   }
@@ -35,5 +51,13 @@ export class CustomerService {
       throw new NotFoundException(`Customer #${id} not found`);
     }
     return this.customerRepository.save(service);
+  }
+
+  async remove(id: string): Promise<CustomerEntity> {
+    const customer = await this.findById(id);
+    if (!customer) {
+      throw new BadRequestException(`customer #${id} not found`);
+    }
+    return customer;
   }
 }
