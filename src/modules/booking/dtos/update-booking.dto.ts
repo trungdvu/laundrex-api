@@ -31,6 +31,9 @@ export class UpdateBookingDto {
   status?: BookingStatusValue;
 
   @IsOptional()
+  deleted?: boolean;
+
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ServicePyaload)

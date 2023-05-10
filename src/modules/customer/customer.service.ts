@@ -54,10 +54,13 @@ export class CustomerService {
   }
 
   async remove(id: string): Promise<CustomerEntity> {
-    const customer = await this.findById(id);
+    const customer = await this.customerRepository.preload({
+      id,
+      deteled: true,
+    });
     if (!customer) {
       throw new BadRequestException(`customer #${id} not found`);
     }
-    return customer;
+    return this.customerRepository.save(customer);
   }
 }

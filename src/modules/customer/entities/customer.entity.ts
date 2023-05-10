@@ -22,6 +22,9 @@ export class CustomerEntity {
   @Column({ default: '' })
   displayName: string;
 
+  @Column({ default: false })
+  deteled: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

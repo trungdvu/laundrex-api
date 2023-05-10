@@ -12,9 +12,9 @@ import { ServiceService } from '../service/service.service';
 import { calculateBookingTotal } from './booking.util';
 import { CreateBookingDetailDto } from './dtos/create-booking-detail.dto';
 import { CreateBookingDto } from './dtos/create-booking.dto';
+import { UpdateBookingDto } from './dtos/update-booking.dto';
 import { BookingDetailEntity } from './entities/booking-detail.entity';
 import { BookingEntity } from './entities/booking.entity';
-import { UpdateBookingDto } from './dtos/update-booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -28,15 +28,35 @@ export class BookingService {
     private readonly dataSource: DataSource,
   ) {}
 
+  async findAll() {
+    return this.bookingRepository.find();
+  }
+
+  async findBookingById(id: number) {
+    const booking = await this.bookingRepository.findOne({
+      where: { id },
+      relations: {
+        customer: true,
+      },
+    });
+    if (!booking) {
+      throw new BadRequestException(`booking #${id} not found`);
+    }
+    const bookingDetails = await this.bookingDetailRepository.find({
+      where: { bookingId: id },
+    });
+    return { ...booking, bookingDetails };
+  }
+
   async create(createBookingDto: CreateBookingDto): Promise<BookingEntity> {
-    const { services: servicesPayload, ...rest } = createBookingDto;
+    const { services: servicesPayload, customerId, ...rest } = createBookingDto;
     const servicePayloadIds = servicesPayload.map((service) => service.id);
     const keyedServicesPayload = keyBy(servicesPayload, 'id') as any;
 
-    const customer = await this.customerService.findById(rest.customerId);
+    const customer = await this.customerService.findById(customerId);
 
     if (!customer) {
-      throw new BadRequestException(`customer #${rest.customerId} not found`);
+      throw new BadRequestException(`customer #${customerId} not found`);
     }
 
     const services = await this.serviceService.findByIds(servicePayloadIds);
@@ -51,9 +71,10 @@ export class BookingService {
 
     try {
       const booking = await this.bookingRepository.save({
-        ...rest,
         status: BookingStatus.Confirmed,
         total: 0,
+        customer,
+        ...rest,
       });
 
       const bookingDetails = await Promise.all(
@@ -92,6 +113,20 @@ export class BookingService {
       id,
       ...updateBookingDto,
     });
+    if (!booking) {
+      throw new Error(`booking #${id} not found`);
+    }
+    return this.bookingRepository.save(booking);
+  }
+
+  async remove(id: number) {
+    const booking = await this.bookingRepository.preload({
+      id,
+      deteled: true,
+    });
+    if (!booking) {
+      throw new Error(`booking #${id} not found`);
+    }
     return this.bookingRepository.save(booking);
   }
 }

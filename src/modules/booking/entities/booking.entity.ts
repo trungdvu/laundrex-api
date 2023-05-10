@@ -25,6 +25,9 @@ export class BookingEntity {
   @Column()
   status: string;
 
+  @Column({ default: false })
+  deteled: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

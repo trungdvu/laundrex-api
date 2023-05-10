@@ -1,3 +1,5 @@
 import { CreateCustomerDto } from './create-customer.dto';
 
-export class UpdateCustomerDto extends CreateCustomerDto {}
+export class UpdateCustomerDto extends CreateCustomerDto {
+  deleted?: boolean;
+}

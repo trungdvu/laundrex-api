@@ -2,9 +2,8 @@
 
 ## Overview
 
-- AWS EC2
-- ZeroSSL
-- NestJS
+- Auto deploy on AWS EC2 w/ Github Actions
+- HTTPS SSL Certificate w/ ZeroSSL
 
 ## Setup
 
