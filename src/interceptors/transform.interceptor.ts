@@ -8,6 +8,7 @@ import { Observable, map } from 'rxjs';
 
 export interface Response<T> {
   statusCode: number;
+  ok: boolean;
   data: T;
 }
 

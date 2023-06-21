@@ -31,10 +31,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     res.status(statusCode).json({
       statusCode,
-      path: req.url,
-      timestamp: new Date().toISOString(),
       ok: statusCode > 199 && statusCode < 400,
-      ...message,
+      data: {
+        path: req.url,
+        timestamp: new Date().toISOString(),
+        ...message,
+      },
     });
   }
 }
