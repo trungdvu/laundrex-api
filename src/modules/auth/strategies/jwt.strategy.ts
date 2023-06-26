@@ -20,8 +20,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: TokenPayload) {
-    const user = await this.userService.findOneById(payload.sub);
+  async validate({ sub }: TokenPayload) {
+    const user = await this.userService.findOneById(sub);
     if (!user) {
       throw new UnauthorizedException({
         errorCode: ErrorCode.TokenExpired,
