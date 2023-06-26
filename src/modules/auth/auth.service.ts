@@ -1,18 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
+import { ErrorCode } from '../../constants/error-code.constant';
 import { hashPassword, matchPassword } from '../../utils/bycrypt.util';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
-import { secondToMillisecond } from './auth.util';
 import { SignUpDto } from './dtos/sign-up.dto';
-import { ErrorCode } from '../../constants/error-code.constant';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
   ) {}
@@ -47,20 +43,9 @@ export class AuthService {
     return user;
   }
 
-  async signIn(user: UserEntity, res: Response): Promise<void> {
-    const tokenPayload = { userId: user.id };
-    const token = await this.jwtService.signAsync(tokenPayload);
-    const jwtExpiration = this.configService.get('JWT_EXPIRATION');
-    res.cookie('Authentication', token, {
-      httpOnly: true,
-      maxAge: secondToMillisecond(jwtExpiration),
-    });
-  }
-
-  async signOut(response: Response): Promise<void> {
-    response.cookie('Authentication', '', {
-      expires: new Date(),
-      httpOnly: true,
-    });
+  async signIn(user: UserEntity): Promise<string> {
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return accessToken;
   }
 }

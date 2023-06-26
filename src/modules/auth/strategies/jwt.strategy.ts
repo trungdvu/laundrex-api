@@ -14,15 +14,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly userService: UserService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => req?.cookies?.Authentication,
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET'),
     });
   }
 
-  async validate({ userId }: TokenPayload) {
-    const user = await this.userService.findOneById(userId);
+  async validate(payload: TokenPayload) {
+    const user = await this.userService.findOneById(payload.sub);
     if (!user) {
       throw new UnauthorizedException({
         errorCode: ErrorCode.TokenExpired,

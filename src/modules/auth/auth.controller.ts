@@ -5,11 +5,9 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { Public } from '../../decorators/public.decorator';
 import { SerializerResponse } from '../../decorators/serializer-response.decorator';
@@ -36,12 +34,9 @@ export class AuthController {
   @UseInterceptors(TranformInterceptor)
   @HttpCode(HttpStatus.OK)
   @SerializerResponse()
-  async signIn(
-    @CurrentUser() user: UserEntity,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    await this.authService.signIn(user, res);
-    return user;
+  async signIn(@CurrentUser() user: UserEntity) {
+    const accessToken = await this.authService.signIn(user);
+    return { accessToken };
   }
 
   @Get('me')
@@ -49,14 +44,5 @@ export class AuthController {
   @SerializerResponse()
   async getProfile(@CurrentUser() user: UserEntity) {
     return user;
-  }
-
-  @Post('sign-out')
-  @Public()
-  @UseInterceptors(TranformInterceptor)
-  @HttpCode(HttpStatus.OK)
-  async signOut(@Res({ passthrough: true }) res: Response) {
-    await this.authService.signOut(res);
-    return true;
   }
 }
