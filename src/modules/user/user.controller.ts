@@ -1,25 +1,28 @@
-import {
-  Body,
-  Controller,
-  Param,
-  Patch,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Put, UseInterceptors } from '@nestjs/common';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { TranformInterceptor } from 'src/interceptors/transform.interceptor';
+import { FileUploadService } from '../file-upload/file-upload.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly fileUploadService: FileUploadService,
+  ) {}
 
-  @Patch(':id')
+  @Put('me')
   @UseInterceptors(TranformInterceptor)
-  update(
-    @Param('id') userId: string,
+  async update(
+    @CurrentUser() user: UserEntity,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
-    return this.userService.update(userId, updateUserDto);
+    const updatedUser = await this.userService.update(user.id, updateUserDto);
+    if (updateUserDto.avatar !== user.avatar) {
+      await this.fileUploadService.deleteObject(user.avatar);
+    }
+    return updatedUser;
   }
 }

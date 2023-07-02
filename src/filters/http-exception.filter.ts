@@ -19,14 +19,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = {
+    let errorData = {
       message: (exception as Error).message,
       errorCode: null,
     } as ErrorModel;
 
     if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
-      message = exception.getResponse() as ErrorModel;
+      errorData = exception.getResponse() as ErrorModel;
     }
 
     res.status(statusCode).json({
@@ -35,7 +35,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       data: {
         path: req.url,
         timestamp: new Date().toISOString(),
-        ...message,
+        ...errorData,
+        message: Array.isArray(errorData.message)
+          ? errorData.message[0]
+          : errorData.message,
       },
     });
   }

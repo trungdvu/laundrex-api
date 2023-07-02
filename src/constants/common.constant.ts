@@ -18,3 +18,6 @@ export const BookingStatus = {
 } as const;
 export type BookingStatusValue =
   (typeof BookingStatus)[keyof typeof BookingStatus];
+
+export const S3_REGION = 'us-east-1';
+export const S3_BUCKET = 'laundrex-assets';

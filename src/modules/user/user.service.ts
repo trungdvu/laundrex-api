@@ -53,7 +53,8 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`user #${id} not found`);
     }
-    return this.userRepository.save(user);
+    await this.userRepository.save(user);
+    return this.findOneByEmail(user.email);
   }
 
   async remove(id: string): Promise<UserEntity> {

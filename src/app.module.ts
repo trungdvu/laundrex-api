@@ -5,10 +5,11 @@ import { dataSourceOptions } from '../db/data-source';
 import { AppController } from './app.controller';
 import { configModuleOptions } from './configs/config-module-options.config';
 import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { CustomerModule } from './modules/customer/customer.module';
+import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { ServiceModule } from './modules/service/service.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ServiceModule } from './modules/service/service.module';
     BookingModule,
     CustomerModule,
     ServiceModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [],
