@@ -10,4 +10,10 @@ export class AppController {
   pkiValidation(@Res() res: Response) {
     res.sendFile(resolve('./6DC64225FDA8C517652013AFE42706A5.txt'));
   }
+
+  @Public()
+  @Get('hello')
+  getHello() {
+    return 'Hello World!';
+  }
 }

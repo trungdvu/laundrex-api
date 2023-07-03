@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
+  Param,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,5 +28,11 @@ export class FileUploadController {
       throw new BadRequestException('file extenstion required');
     }
     return this.fileUploadService.createPresignedUrl(user.id, extenstion);
+  }
+
+  @Post('/cleaning')
+  @UseInterceptors(TranformInterceptor)
+  deleteFile(@Body('key') key: string) {
+    return this.fileUploadService.deleteObject(key);
   }
 }

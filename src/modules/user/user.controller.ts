@@ -20,7 +20,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
     const updatedUser = await this.userService.update(user.id, updateUserDto);
-    if (updateUserDto.avatar !== user.avatar) {
+    if (updateUserDto.avatar !== user.avatar && user.avatar) {
       await this.fileUploadService.deleteObject(user.avatar);
     }
     return updatedUser;
