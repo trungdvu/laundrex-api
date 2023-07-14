@@ -7,6 +7,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3_BUCKET, S3_REGION } from 'src/constants/common.constant';
+import { Environment } from 'src/constants/environment.constant';
 import * as uuid from 'uuid';
 
 @Injectable()
@@ -14,13 +15,23 @@ export class FileUploadService {
   constructor(private readonly configService: ConfigService) {}
 
   private getS3Client(): S3Client {
-    return new S3Client({
+    console.log(
+      "🚀 ~ FileUploadService ~ getS3Client ~ this.configService.get('AWS_SECRET_ACCESS_KEY'):",
+      this.configService.get('AWS_SECRET_ACCESS_KEY'),
+    );
+
+    const config: any = {
       region: S3_REGION,
-      credentials: {
-        accessKeyId: this.configService.get('S3_ACCESS_KEY_ID'),
-        secretAccessKey: this.configService.get('S3_ACCESS_KEY_SECRET'),
-      },
-    });
+    };
+
+    if (this.configService.get('NODE_ENV') === Environment.Development) {
+      config.credentials = {
+        accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
+      };
+    }
+
+    return new S3Client(config);
   }
 
   async createPresignedUrl(
