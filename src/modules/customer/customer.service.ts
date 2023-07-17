@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ErrorCode } from 'src/constants/error-code.constant';
+import { ERROR_CODE } from 'src/constants/common.constant';
 import { Repository } from 'typeorm';
 import { CreateCustomerDto } from './dtos/create-customer.dto';
 import { UpdateCustomerDto } from './dtos/update-customer.dto';
@@ -31,8 +31,8 @@ export class CustomerService {
     const existed = await this.findByUsername(createCustomerDto.username);
     if (existed) {
       throw new BadRequestException({
-        errorCode: ErrorCode.CustomerAlreadyExists,
-        message: 'customer already exists',
+        errorCode: ERROR_CODE.CUSTOMER_EXISTED,
+        message: 'customer already existed',
       });
     }
     const customer = this.customerRepository.create(createCustomerDto);

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ErrorCode } from '../../constants/error-code.constant';
+import { ERROR_CODE } from '../../constants/common.constant';
 import { hashPassword, matchPassword } from '../../utils/bycrypt.util';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
@@ -18,8 +18,8 @@ export class AuthService {
     const existed = await this.userService.findOneByEmail(email);
     if (existed) {
       throw new BadRequestException({
-        errorCode: ErrorCode.EmailAlreadyExists,
-        message: 'email already exists',
+        errorCode: ERROR_CODE.EMAIL_EXISTED,
+        message: 'email already existed',
       });
     }
     const hashed = await hashPassword(password);

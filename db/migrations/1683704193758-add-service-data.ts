@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { ServiceUnit } from 'src/constants/common.constant';
+import { SERVICE_UNIT } from 'src/constants/common.constant';
 import { ServiceEntity } from 'src/modules/service/entities/service.entity';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
@@ -7,12 +7,12 @@ const services = [
   {
     name: 'Laundering 70',
     price: 15000,
-    unit: ServiceUnit.Kilogram,
+    unit: SERVICE_UNIT.KILOGRAM,
   },
   {
     name: 'Sneakers cleaning',
     price: 40000,
-    unit: ServiceUnit.Item,
+    unit: SERVICE_UNIT.ITEM,
   },
 ];
 
@@ -37,5 +37,6 @@ export class AddServiceData1683704193758 implements MigrationInterface {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public async down(queryRunner: QueryRunner): Promise<void> {}
 }

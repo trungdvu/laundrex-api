@@ -7,7 +7,7 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { TranformInterceptor } from 'src/interceptors/transform.interceptor';
+import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dtos/create-booking.dto';
 
@@ -16,24 +16,24 @@ export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Get()
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   getBookings() {
     return this.bookingService.findAll();
   }
 
   @Get(':id')
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   getBookingDetail(@Param('id') id: number) {
     return this.bookingService.findBookingById(id);
   }
 
   @Post()
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   createBooking(@Body() body: CreateBookingDto) {
     return this.bookingService.create(body);
   }
   @Delete(':id')
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   removeBooking(@Param('id') id: number) {
     return this.bookingService.remove(id);
   }

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { keyBy } from 'lodash';
-import { BookingStatus } from 'src/constants/common.constant';
+import { BOOKING_STATUS } from 'src/constants/common.constant';
 import { DataSource, Repository } from 'typeorm';
 import { CustomerService } from '../customer/customer.service';
 import { ServiceService } from '../service/service.service';
@@ -71,7 +71,7 @@ export class BookingService {
 
     try {
       const booking = await this.bookingRepository.save({
-        status: BookingStatus.Confirmed,
+        status: BOOKING_STATUS.CONFIRMED,
         total: 0,
         customer,
         ...rest,

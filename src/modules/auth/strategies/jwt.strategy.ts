@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserService } from '../../user/user.service';
 import { TokenPayload } from '../auth.type';
-import { ErrorCode } from '../../../constants/error-code.constant';
+import { ERROR_CODE } from '../../../constants/common.constant';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -26,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.findOneById(sub);
     if (!user) {
       throw new UnauthorizedException({
-        errorCode: ErrorCode.TokenExpired,
+        errorCode: ERROR_CODE.TOKEN_EXPIRED,
         message: 'access token is expired',
       });
     }

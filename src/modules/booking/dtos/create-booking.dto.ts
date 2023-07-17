@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {
-  BookingStatus,
+  BOOKING_STATUS,
   BookingStatusValue,
 } from 'src/constants/common.constant';
 import { objectValueToArray } from 'src/utils/object.util';
@@ -33,7 +33,7 @@ export class CreateBookingDto {
   description?: string;
 
   @IsOptional()
-  @IsIn(objectValueToArray(BookingStatus))
+  @IsIn(objectValueToArray(BOOKING_STATUS))
   status?: BookingStatusValue;
 
   @IsDefined()

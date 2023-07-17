@@ -1,11 +1,11 @@
 import * as dotenv from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { Environment } from '../src/constants/environment.constant';
+import { ENV } from '../src/constants/common.constant';
 
 dotenv.config();
 
 const getSslOptions = (nodeEnv: string) => {
-  if (nodeEnv === Environment.Development) {
+  if (nodeEnv === ENV.DEVELOPMENT) {
     return false;
   }
   return {

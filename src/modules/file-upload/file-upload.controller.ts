@@ -2,14 +2,10 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
-  Param,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { TranformInterceptor } from 'src/interceptors/transform.interceptor';
-import { UserEntity } from '../user/entities/user.entity';
+import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { CreatePresignedUrlDto } from './dots/create-presigned-url.dto';
 import { FileUploadService } from './file-upload.service';
 
@@ -18,21 +14,18 @@ export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
   @Post('presigned-url')
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   createPreSignedUrl(
-    @CurrentUser() user: UserEntity,
-    @Body() { filename }: CreatePresignedUrlDto,
+    @Body()
+    { filename, folder }: CreatePresignedUrlDto,
   ) {
-    const extenstion = filename.split('.').pop();
-    if (!extenstion) {
-      throw new BadRequestException('file extenstion required');
+    const extension = filename.split('.').pop();
+    if (!extension) {
+      throw new BadRequestException('file extension required');
     }
-    return this.fileUploadService.createPresignedUrl(user.id, extenstion);
-  }
-
-  @Post('/cleaning')
-  @UseInterceptors(TranformInterceptor)
-  deleteFile(@Body('key') key: string) {
-    return this.fileUploadService.deleteObject(key);
+    return this.fileUploadService.createPresignedUrl({
+      extension,
+      folder,
+    });
   }
 }

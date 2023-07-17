@@ -7,7 +7,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { validate as classValidate } from 'class-validator';
 import { Strategy } from 'passport-local';
 import { objectValueToArray } from 'src/utils/object.util';
-import { ErrorCode } from '../../../constants/error-code.constant';
+import { ERROR_CODE } from '../../../constants/common.constant';
 import { UserEntity } from '../../user/entities/user.entity';
 import { AuthService } from '../auth.service';
 import { SignInDto } from '../dtos/sign-in.dto';
@@ -35,7 +35,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
     if (!user) {
       throw new UnauthorizedException({
-        errorCode: ErrorCode.UserNotFound,
+        errorCode: ERROR_CODE.USER_NOT_FOUND,
         message: 'user not found',
       });
     }

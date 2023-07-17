@@ -11,7 +11,7 @@ import {
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { Public } from '../../decorators/public.decorator';
 import { SerializerResponse } from '../../decorators/serializer-response.decorator';
-import { TranformInterceptor } from '../../interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../interceptors/transform.interceptor';
 import { UserEntity } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dtos/sign-up.dto';
@@ -23,7 +23,7 @@ export class AuthController {
 
   @Post('sign-up')
   @Public()
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);
   }
@@ -31,7 +31,7 @@ export class AuthController {
   @Post('sign-in')
   @Public()
   @UseGuards(LocalAuthGuard)
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   @HttpCode(HttpStatus.OK)
   @SerializerResponse()
   async signIn(@CurrentUser() user: UserEntity) {
@@ -40,7 +40,7 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseInterceptors(TranformInterceptor)
+  @UseInterceptors(TransformInterceptor)
   @SerializerResponse()
   async getProfile(@CurrentUser() user: UserEntity) {
     return user;

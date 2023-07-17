@@ -1,15 +1,12 @@
 import { ConfigModuleOptions } from '@nestjs/config';
 import * as Joi from 'joi';
-import { Environment } from '../constants/environment.constant';
+import { ENV } from '../constants/common.constant';
 
 export const configModuleOptions: ConfigModuleOptions = {
   isGlobal: true,
   envFilePath: '.env',
   validationSchema: Joi.object({
-    NODE_ENV: Joi.string().valid(
-      Environment.Development,
-      Environment.Production,
-    ),
+    NODE_ENV: Joi.string().valid(ENV.DEVELOPMENT, ENV.PRODUCTION),
     POSTGRES_HOST: Joi.string(),
     POSTGRES_PORT: Joi.number(),
     POSTGRES_USER: Joi.string(),
