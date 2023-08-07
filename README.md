@@ -2,7 +2,9 @@
 
 ## Overview
 
-- Auto deploy on AWS EC2 w/ Github Actions
+- REST api using NestJS
+- AWS services being used: EC2, S3, IAM, RDS
+- Auto deploy w/ Github Actions
 - HTTPS SSL Certificate w/ ZeroSSL
 
 ## Setup
