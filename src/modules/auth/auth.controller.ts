@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   UseGuards,
   UseInterceptors,
@@ -44,5 +45,22 @@ export class AuthController {
   @SerializerResponse()
   async getProfile(@CurrentUser() user: UserEntity) {
     return user;
+  }
+
+  @Public()
+  @Post('v2/sign-up')
+  @UseInterceptors(TransformInterceptor)
+  async signInWithEmailConfirm(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUpV2(signUpDto);
+  }
+
+  @Public()
+  @Get('v2/verify/:userId/:token')
+  @UseInterceptors(TransformInterceptor)
+  async verifyEmail(
+    @Param('userId') userId: string,
+    @Param('token') token: string,
+  ) {
+    return this.authService.verifyEmail(userId, token);
   }
 }

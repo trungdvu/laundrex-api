@@ -37,4 +37,7 @@ export class UserEntity {
   @ManyToOne(() => RoleEntity, (role) => role.user, { nullable: true })
   @JoinColumn()
   role?: RoleEntity;
+
+  @Column({ nullable: true, default: false })
+  verified?: boolean;
 }

@@ -10,6 +10,7 @@ import { CustomerModule } from './modules/customer/customer.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { ServiceModule } from './modules/service/service.module';
 import { UserModule } from './modules/user/user.module';
+import { TokenModule } from './token/token.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './modules/user/user.module';
     CustomerModule,
     ServiceModule,
     FileUploadModule,
+    TokenModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -57,6 +57,14 @@ export class UserService {
     return this.findOneByEmail(user.email);
   }
 
+  async verifyUser(id: string, verified: boolean) {
+    const user = await this.userRepository.preload({ id, verified });
+    if (!user) {
+      throw new NotFoundException(`user #${id} not found`);
+    }
+    return this.userRepository.save(user);
+  }
+
   async remove(id: string): Promise<UserEntity> {
     const user = await this.findOneById(id);
     if (!user) {

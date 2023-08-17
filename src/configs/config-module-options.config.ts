@@ -14,5 +14,7 @@ export const configModuleOptions: ConfigModuleOptions = {
     POSTGRES_DB: Joi.string(),
     JWT_SECRET: Joi.string(),
     JWT_EXPIRATION: Joi.number(),
+    EMAIL_SENDER_USER: Joi.string(),
+    EMAIL_SENDER_PASS: Joi.string(),
   }),
 };

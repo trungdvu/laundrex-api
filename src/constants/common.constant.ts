@@ -28,7 +28,6 @@ export const SERVICE_UNIT = {
   KILOGRAM: 'kilogram',
   ITEM: 'item',
 } as const;
-export type ServiceUnitValue = (typeof SERVICE_UNIT)[keyof typeof SERVICE_UNIT];
 
 export const BOOKING_STATUS = {
   CONFIRMED: 'confirmed',
@@ -36,5 +35,7 @@ export const BOOKING_STATUS = {
   DELIVERING: 'delivering',
   DONE: 'done',
 } as const;
-export type BookingStatusValue =
-  (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS];
+
+export const TOKEN_ACTION = {
+  VERIFY_EMAIL: 'verify_email',
+} as const;

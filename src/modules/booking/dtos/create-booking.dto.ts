@@ -9,10 +9,8 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import {
-  BOOKING_STATUS,
-  BookingStatusValue,
-} from 'src/constants/common.constant';
+import { BOOKING_STATUS } from 'src/constants/common.constant';
+import { BookingStatusValue } from 'src/constants/constant.type';
 import { objectValueToArray } from 'src/utils/object.util';
 
 export class ServicePyaload {
