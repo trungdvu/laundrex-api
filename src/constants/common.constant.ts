@@ -19,8 +19,8 @@ export const ERROR_CODE = {
 };
 
 export const ROLE = {
-  ADMINISTRATOR: 'Administrator',
-  USER: 'User',
+  ADMINISTRATOR: 'administrator',
+  USER: 'user',
 } as const;
 export type RoleValue = (typeof ROLE)[keyof typeof ROLE];
 
