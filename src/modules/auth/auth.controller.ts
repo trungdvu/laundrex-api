@@ -43,8 +43,8 @@ export class AuthController {
   @Public()
   @Post('sign-up')
   @UseInterceptors(TransformInterceptor)
-  async signInWithEmailConfirm(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUpV2(signUpDto);
+  async signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto);
   }
 
   @Public()

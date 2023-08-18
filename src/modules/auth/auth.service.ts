@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { TokenService } from 'src/token/token.service';
 import { isUuid, sendMail } from 'src/utils/common.util';
-import { ENV, ERROR_CODE, TOKEN_ACTION } from '../../constants/common.constant';
+import { ENV, ERROR_CODE } from '../../constants/common.constant';
 import { hashPassword, matchPassword } from '../../utils/bycrypt.util';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
@@ -37,7 +37,7 @@ export class AuthService {
     return accessToken;
   }
 
-  async signUpV2(signUpDto: SignUpDto): Promise<{ message: string }> {
+  async signUp(signUpDto: SignUpDto): Promise<{ message: string }> {
     const { password, email } = signUpDto;
     const existed = await this.userService.findOneByEmail(email);
     if (existed) {
@@ -52,7 +52,6 @@ export class AuthService {
       password: hashed,
     });
     const token = await this.tokenService.create({
-      action: TOKEN_ACTION.VERIFY_EMAIL,
       userId: user.id,
     });
     const isDev = this.configService.get('NODE_ENV') === ENV.DEVELOPMENT;
@@ -99,9 +98,7 @@ export class AuthService {
   async resendCode(userEmail: string) {
     const user = await this.userService.findOneByEmail(userEmail);
     if (!user || user.verified) {
-      throw new BadRequestException(
-        'the email is invalid or already verified, please double check it again',
-      );
+      throw new BadRequestException('the email is invalid or already verified');
     }
     const existedTokens = await this.tokenService.findAll(user.id);
     if (existedTokens.length) {
@@ -110,7 +107,6 @@ export class AuthService {
       );
     }
     const token = await this.tokenService.create({
-      action: TOKEN_ACTION.VERIFY_EMAIL,
       userId: user.id,
     });
     const isDev = this.configService.get('NODE_ENV') === ENV.DEVELOPMENT;
@@ -120,7 +116,7 @@ export class AuthService {
       {
         to: userEmail,
         subject: 'Confirm your account',
-        text: `Please confirm your email address by visit this: ${verifyLink}`,
+        text: `Please confirm your account by visit this: ${verifyLink}`,
       },
       (error) => {
         if (error) {
