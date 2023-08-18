@@ -18,23 +18,6 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto): Promise<UserEntity> {
-    const { password, email } = signUpDto;
-    const existed = await this.userService.findOneByEmail(email);
-    if (existed) {
-      throw new BadRequestException({
-        errorCode: ERROR_CODE.EMAIL_EXISTED,
-        message: 'email already existed',
-      });
-    }
-    const hashed = await hashPassword(password);
-    const user = await this.userService.create({
-      email,
-      password: hashed,
-    });
-    return user;
-  }
-
   async validateUser(email: string, password: string): Promise<UserEntity> {
     const user = await this.userService.findOneByEmail(email);
     if (!user) {
@@ -79,7 +62,9 @@ export class AuthService {
       {
         to: email,
         subject: 'Confirm your account',
-        text: `Please confirm your email address by visit this: ${verifyLink}`,
+        text: `Hi ${
+          email.split('@')[0]
+        }, please confirm your account address by visit this: ${verifyLink}`,
       },
       (error) => {
         if (error) {
@@ -98,16 +83,53 @@ export class AuthService {
     }
     const user = await this.userService.findOneById(userId);
     if (!user) {
-      throw new BadRequestException('Invalid link');
+      throw new BadRequestException('invalid link');
     }
     const token = await this.tokenService.findOne(userId, tokenValue);
     if (!token) {
-      throw new BadRequestException('Invalid link');
+      throw new BadRequestException('invalid link');
     }
     await this.userService.verifyUser(userId, true);
     await this.tokenService.remove(userId, tokenValue);
     return {
       message: 'email verified successfully',
+    };
+  }
+
+  async resendCode(userEmail: string) {
+    const user = await this.userService.findOneByEmail(userEmail);
+    if (!user || user.verified) {
+      throw new BadRequestException(
+        'the email is invalid or already verified, please double check it again',
+      );
+    }
+    const existedTokens = await this.tokenService.findAll(user.id);
+    if (existedTokens.length) {
+      await this.tokenService.removeIn(
+        existedTokens.map(({ userId }) => userId),
+      );
+    }
+    const token = await this.tokenService.create({
+      action: TOKEN_ACTION.VERIFY_EMAIL,
+      userId: user.id,
+    });
+    const isDev = this.configService.get('NODE_ENV') === ENV.DEVELOPMENT;
+    const host = isDev ? `http://localhost:3000` : 'https://laundrex.me';
+    const verifyLink = `${host}/verify/${user.id}/${token.value}`;
+    sendMail(
+      {
+        to: userEmail,
+        subject: 'Confirm your account',
+        text: `Please confirm your email address by visit this: ${verifyLink}`,
+      },
+      (error) => {
+        if (error) {
+          console.log('send mail error', error);
+        }
+      },
+    );
+    return {
+      message: 'sent an email to verify your account',
     };
   }
 }

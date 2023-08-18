@@ -22,13 +22,6 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('sign-up')
-  @Public()
-  @UseInterceptors(TransformInterceptor)
-  signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
-  }
-
   @Post('sign-in')
   @Public()
   @UseGuards(LocalAuthGuard)
@@ -48,19 +41,26 @@ export class AuthController {
   }
 
   @Public()
-  @Post('v2/sign-up')
+  @Post('sign-up')
   @UseInterceptors(TransformInterceptor)
   async signInWithEmailConfirm(@Body() signUpDto: SignUpDto) {
     return this.authService.signUpV2(signUpDto);
   }
 
   @Public()
-  @Get('v2/verify/:userId/:token')
+  @Get('verify/:userId/:token')
   @UseInterceptors(TransformInterceptor)
   async verifyEmail(
     @Param('userId') userId: string,
     @Param('token') token: string,
   ) {
     return this.authService.verifyEmail(userId, token);
+  }
+
+  @Public()
+  @Post('verify/resend')
+  @UseInterceptors(TransformInterceptor)
+  async resendVerifyEmail(@Body('email') email: string) {
+    return this.authService.resendCode(email);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as crypto from 'crypto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateTokenDto } from './dtos/create-token.dto';
 import { TokenEntity } from './entries/token.entity';
 
@@ -31,6 +31,12 @@ export class TokenService {
     });
   }
 
+  async findAll(userId: string) {
+    return this.tokenRepository.find({
+      where: { userId },
+    });
+  }
+
   async remove(userId: string, tokenValue: string) {
     const token = await this.tokenRepository.findOne({
       where: {
@@ -42,5 +48,9 @@ export class TokenService {
       throw new NotFoundException(`token ${tokenValue} not found`);
     }
     return this.tokenRepository.remove(token);
+  }
+
+  async removeIn(userIds: string[]) {
+    return this.tokenRepository.delete({ userId: In(userIds) });
   }
 }
